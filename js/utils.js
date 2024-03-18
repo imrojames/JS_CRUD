@@ -9,7 +9,7 @@ class CrudApp {
         const table = document.querySelector("#myTable tbody");
         table.innerHTML = '';
         this.values.forEach((item, index) => {
-            const row = `<tr>
+            const row = `<tr style="background-color: ${item.status === "Approved" ? "green" : "orange"};">
                             <td>${item.name}</td>
                             <td>${item.date}</td>
                             <td>${item.status}</td>
@@ -29,14 +29,27 @@ class CrudApp {
 
     HandleSubmit = (event) => {
         event.preventDefault();
-        const name = document.querySelector(".name").value;
-        const date = document.querySelector(".date").value;
-        const status = document.querySelector(".status").value;
+        if (Validate() === true){ // Validate if the name contains number. 
+            const empName = document.querySelector(".name").value;
+            const date = document.querySelector(".date").value;
+            const status = document.querySelector(".status").value;
+            // Validates if the employee name contains only spaces
+            if (empName === null || empName.match(/^ *$/) !== null) {
+                alert("Error. Employee Name is empty or contains only spaces");
+            } else {
+                let name = empName.trim();
+                const newPersons = { name, date, status };
+                this.values.push(newPersons);
+                this.GetAllData();
 
-        const newAppointment = {name, date, status};
-        this.values.push(newAppointment);
-        alert(`Success: Appointment successfully added.`);
-        this.GetAllData();
+                alert("Appointment successfully added.");
+            }
+        } else {
+            alert("Error. Employee name contains number, special characters or empty fields.");
+        }
+
+        // Clear fields
+        ClearFields();
     }
 
     HandleRemove = (event) => {
