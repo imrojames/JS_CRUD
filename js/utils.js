@@ -14,11 +14,16 @@ class CrudApp {
                             <td>${item.date}</td>
                             <td>${item.status}</td>
                             <td>
-                                <button class="btn btn-danger">Remove</button>
-                                <button class="btn btn-primary">Edit</button>
+                                <button class="btn btn-danger remove">Remove</button>
+                                <button class="btn btn-primary edit">Edit</button>
                             </td>
                         </tr>`
             table.innerHTML = table.innerHTML + row;
+        });
+
+        const btnRemove = document.querySelectorAll(".remove");
+        btnRemove.forEach(btn => {
+            btn.addEventListener("click", this.HandleRemove.bind(this));
         });
     }
 
@@ -32,6 +37,16 @@ class CrudApp {
         this.values.push(newAppointment);
         alert(`Success: Appointment successfully added.`);
         this.GetAllData();
+    }
+
+    HandleRemove = (event) => {
+        const index = event.target.dataset.index;
+        // Confirmation alert upon removing appointment
+        if (confirm(`Are you sure do you want to remove this appointment ?`)) {
+            this.values.splice(index, 1); 
+            this.GetAllData();
+            alert("Appointment successfully removed.");
+        }
     }
 }
 
