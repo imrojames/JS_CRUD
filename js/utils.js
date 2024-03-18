@@ -1,6 +1,8 @@
 class CrudApp {
     constructor() {
         this.values = [{name: "Rojames Binoya", date: "2024-03-14", status: "Pending"}];
+        const form = document.querySelector("#appointmentForm");
+        form.addEventListener("submit", this.HandleSubmit.bind(this));
     }
 
     GetAllData = () => {
@@ -18,6 +20,18 @@ class CrudApp {
                         </tr>`
             table.innerHTML = table.innerHTML + row;
         });
+    }
+
+    HandleSubmit = (event) => {
+        event.preventDefault();
+        const name = document.querySelector(".name").value;
+        const date = document.querySelector(".date").value;
+        const status = document.querySelector(".status").value;
+
+        const newAppointment = {name, date, status};
+        this.values.push(newAppointment);
+        alert(`Success: Appointment successfully added.`);
+        this.GetAllData();
     }
 }
 
