@@ -35,13 +35,12 @@ class CrudApp {
     HandleSubmit = (event) => {
         event.preventDefault();
         const buttonAddOrUpdate = document.querySelector(".btnAddOrUpdate");
+        let empName = document.querySelector(".name").value;
+        let date = document.querySelector(".date").value;
+        let status = document.querySelector(".status").value;
 
         if (buttonAddOrUpdate.innerHTML === "Add Appointment") {
             if (Validate() === true){ // Validate if the name contains number. 
-                const empName = document.querySelector(".name").value;
-                const date = document.querySelector(".date").value;
-                const status = document.querySelector(".status").value;
-                // Validates if the employee name contains only spaces
                 if (empName === null || empName.match(/^ *$/) !== null) {
                     alert("Error. Employee Name is empty or contains only spaces");
                 } else {
@@ -56,14 +55,22 @@ class CrudApp {
                 alert("Error. Employee name contains number, special characters or empty fields.");
             }
     
-            // Clear fields
             ClearFields();
         } else if (buttonAddOrUpdate.innerHTML === "Update Appointment") {
-            // update code here
+            let id = document.querySelector(".index-holder").value;
+            let valueOfIndex = this.values[id];
+            let updatedValue;
+
+            updatedValue = {name: empName, date: date, status: status};
+            this.values[id] = updatedValue;
 
             this.GetAllData();
             alert("Success: Appointment successfully updated");
             ClearFields();
+
+            document.querySelector(".btnAddOrUpdate").innerHTML = "Add Appointment";
+            document.querySelector(".btn-cancel").setAttribute("hidden", "");
+            document.querySelector(".edit").removeAttribute("disabled");
         }
 
         
@@ -88,8 +95,11 @@ class CrudApp {
         document.querySelector(".name").value = name;
         document.querySelector(".date").value = date;
         document.querySelector(".status").value = status;
+        document.querySelector(".index-holder").value = index
 
         document.querySelector(".btnAddOrUpdate").innerHTML = "Update Appointment";
+        document.querySelector(".remove").setAttribute("disabled", true);
+        document.querySelector(".btn-cancel").removeAttribute("hidden");
     }
 
 }
@@ -99,4 +109,11 @@ const appointment = new CrudApp;
 // display data upon window load
 window.addEventListener("load", () => {
     appointment.GetAllData();
+});
+
+document.querySelector(".btn-cancel").addEventListener("click", () => {
+    ClearFields();
+    document.querySelector(".btnAddOrUpdate").innerHTML = "Add Appointment";
+    document.querySelector(".btn-cancel").setAttribute("hidden", "");
+    document.querySelector(".remove").removeAttribute("disabled");
 });
