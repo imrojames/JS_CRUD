@@ -14,8 +14,8 @@ class CrudApp {
                             <td>${item.date}</td>
                             <td>${item.status}</td>
                             <td>
-                                <button class="btn btn-danger remove">Remove</button>
-                                <button class="btn btn-primary edit">Edit</button>
+                                <button class="btn btn-danger remove" data-index="${index}">Remove</button>
+                                <button class="btn btn-primary edit" data-index="${index}">Edit</button>
                             </td>
                         </tr>`
             table.innerHTML = table.innerHTML + row;
@@ -25,31 +25,48 @@ class CrudApp {
         btnRemove.forEach(btn => {
             btn.addEventListener("click", this.HandleRemove.bind(this));
         });
+
+        const btnEdit = document.querySelectorAll(".edit");
+        btnEdit.forEach(btn => {
+            btn.addEventListener("click", this.HandleFetchData.bind(this));
+        })
     }
 
     HandleSubmit = (event) => {
         event.preventDefault();
-        if (Validate() === true){ // Validate if the name contains number. 
-            const empName = document.querySelector(".name").value;
-            const date = document.querySelector(".date").value;
-            const status = document.querySelector(".status").value;
-            // Validates if the employee name contains only spaces
-            if (empName === null || empName.match(/^ *$/) !== null) {
-                alert("Error. Employee Name is empty or contains only spaces");
-            } else {
-                let name = empName.trim();
-                const newPersons = { name, date, status };
-                this.values.push(newPersons);
-                this.GetAllData();
+        const buttonAddOrUpdate = document.querySelector(".btnAddOrUpdate");
 
-                alert("Appointment successfully added.");
+        if (buttonAddOrUpdate.innerHTML === "Add Appointment") {
+            if (Validate() === true){ // Validate if the name contains number. 
+                const empName = document.querySelector(".name").value;
+                const date = document.querySelector(".date").value;
+                const status = document.querySelector(".status").value;
+                // Validates if the employee name contains only spaces
+                if (empName === null || empName.match(/^ *$/) !== null) {
+                    alert("Error. Employee Name is empty or contains only spaces");
+                } else {
+                    let name = empName.trim();
+                    const newPersons = { name, date, status };
+                    this.values.push(newPersons);
+                    this.GetAllData();
+    
+                    alert("Appointment successfully added.");
+                }
+            } else {
+                alert("Error. Employee name contains number, special characters or empty fields.");
             }
-        } else {
-            alert("Error. Employee name contains number, special characters or empty fields.");
+    
+            // Clear fields
+            ClearFields();
+        } else if (buttonAddOrUpdate.innerHTML === "Update Appointment") {
+            // update code here
+
+            this.GetAllData();
+            alert("Success: Appointment successfully updated");
+            ClearFields();
         }
 
-        // Clear fields
-        ClearFields();
+        
     }
 
     HandleRemove = (event) => {
@@ -61,6 +78,20 @@ class CrudApp {
             alert("Appointment successfully removed.");
         }
     }
+
+    HandleFetchData = (event) => {
+        const index = event.target.dataset.index;
+        const name = this.values[index].name;
+        const date = this.values[index].date;
+        const status = this.values[index].status;
+
+        document.querySelector(".name").value = name;
+        document.querySelector(".date").value = date;
+        document.querySelector(".status").value = status;
+
+        document.querySelector(".btnAddOrUpdate").innerHTML = "Update Appointment";
+    }
+
 }
 
 const appointment = new CrudApp;
